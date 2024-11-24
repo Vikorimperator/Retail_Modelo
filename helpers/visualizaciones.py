@@ -1,3 +1,4 @@
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
@@ -108,6 +109,47 @@ def visualizar_beneficios_interactivo(df, agrupador, titulo="Beneficios por Cate
         height=600,  # Altura del gráfico
         showlegend=True,  # Mostrar leyenda para activar/desactivar categorías
     )
+    
+    # Mostrar el gráfico
+    fig.show()
+    
+    
+def graficar_tendencia_interactiva(df, fecha_columna, valor_columna, titulo="Tendencia en el Tiempo"):
+    """
+    Crea un gráfico de línea interactivo con Plotly para visualizar tendencias temporales,
+    agrupando los datos por fecha.
+
+    Args:
+        df (pd.DataFrame): DataFrame que contiene los datos.
+        fecha_columna (str): Columna que contiene las fechas.
+        valor_columna (str): Columna cuyos valores se desean graficar.
+        titulo (str): Título del gráfico (por defecto: "Tendencia en el Tiempo").
+
+    Returns:
+        None: Muestra el gráfico interactivo de Plotly.
+    """
+    # Verificar que las columnas existan en el DataFrame
+    if fecha_columna not in df.columns or valor_columna not in df.columns:
+        raise ValueError(f"Las columnas '{fecha_columna}' o '{valor_columna}' no existen en el DataFrame.")
+    
+    # Asegurarse de que la columna de fechas esté en formato datetime
+    df[fecha_columna] = pd.to_datetime(df[fecha_columna])
+    
+    # Agrupar los datos por fecha
+    datos_agrupados = df.groupby(fecha_columna)[valor_columna].sum().reset_index()
+    
+    # Crear el gráfico interactivo
+    fig = px.line(
+        datos_agrupados,
+        x=fecha_columna,
+        y=valor_columna,
+        title=titulo,
+        labels={fecha_columna: "Fecha", valor_columna: valor_columna.capitalize()},
+        template="plotly_white",
+    )
+    
+    # Agregar un deslizador de rango en el eje X
+    fig.update_xaxes(rangeslider_visible=True)
     
     # Mostrar el gráfico
     fig.show()
