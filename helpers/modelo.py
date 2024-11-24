@@ -21,7 +21,6 @@ def comprobar_dispositivo():
     return device
 
 
-
 def preparar_datos_lstm(data, target_col, lag=7):
     """
     Prepara los datos en formato de secuencias para LSTM.
